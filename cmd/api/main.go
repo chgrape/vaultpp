@@ -39,6 +39,8 @@ func main() {
 
 	mux.HandleFunc("GET /items", itemHandler.HandleGetItems)
 	mux.HandleFunc("POST /item", itemHandler.HandleCreateItems)
+	mux.HandleFunc("PUT /item", itemHandler.HandleUpdateItem)
+	mux.HandleFunc("DELETE /item", itemHandler.HandleDeleteItem)
 
 	err = http.ListenAndServe(":3333", mux)
 	if err != nil {
