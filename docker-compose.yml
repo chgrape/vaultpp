@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: "postgres:bookworm"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: db
+    container_name: postgres
+    restart: always
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  pgdata:
+    
