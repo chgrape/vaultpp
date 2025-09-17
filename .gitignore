@@ -1,3 +1,6 @@
 go.sum
 .env
-./main
+.env.prod
+.env.test
+main
+*.out
