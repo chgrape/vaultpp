@@ -38,6 +38,7 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /items", itemHandler.HandleGetItems)
+	mux.HandleFunc("GET /item", itemHandler.HandleGetItem)
 	mux.HandleFunc("POST /item", itemHandler.HandleCreateItems)
 	mux.HandleFunc("PUT /item", itemHandler.HandleUpdateItem)
 	mux.HandleFunc("DELETE /item", itemHandler.HandleDeleteItem)

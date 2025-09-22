@@ -26,6 +26,28 @@ func (h *ItemHandler) HandleGetItems(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(items)
 }
 
+func (h *ItemHandler) HandleGetItem(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	idStr := r.URL.Query().Get("id")
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid id", http.StatusBadRequest)
+		return
+	}
+
+	item, err := h.Service.ListItem(id, ctx)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to get item: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(item)
+
+}
+
 func (h *ItemHandler) HandleCreateItems(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	var item repository.Item
@@ -50,7 +72,6 @@ func (h *ItemHandler) HandleUpdateItem(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	var item repository.Item
 	idStr := r.URL.Query().Get("id")
-
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, "Invalid id", http.StatusBadRequest)

@@ -16,6 +16,10 @@ func (s *ItemService) ListItems(ctx context.Context) ([]repository.Item, error) 
 	return s.Repo.GetItems(ctx)
 }
 
+func (s *ItemService) ListItem(id int, ctx context.Context) (*repository.Item, error) {
+	return s.Repo.GetItem(id, ctx)
+}
+
 func (s *ItemService) AddItem(item repository.Item, ctx context.Context) (int, error) {
 	if strings.TrimSpace(item.Name) == "" || strings.TrimSpace(item.Description) == "" {
 		return 0, errors.New("missing required field")

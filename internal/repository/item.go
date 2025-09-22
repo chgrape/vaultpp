@@ -45,6 +45,21 @@ func (r *ItemRepository) GetItems(ctx context.Context) ([]Item, error) {
 	return items, nil
 }
 
+func (r *ItemRepository) GetItem(id int, ctx context.Context) (*Item, error) {
+	var item Item
+
+	query := `
+		SELECT * FROM items WHERE id=$1
+	`
+
+	err := r.DB.QueryRow(ctx, query, id).Scan(&item.ID, &item.Name, &item.Description, &item.CreatedAt, &item.UpdatedAt)
+	if err != nil {
+		return nil, err
+	}
+
+	return &item, nil
+}
+
 func (r *ItemRepository) CreateItem(ctx context.Context, item Item) (int, error) {
 	var id int
 
