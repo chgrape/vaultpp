@@ -31,6 +31,10 @@ func main() {
 		log.Fatalf("Connection to database couldn't be established")
 	}
 
+	userRepo := repository.UserRepository{DB: pool}
+	userService := service.UserService{Repo: &userRepo}
+	userHandler := handler.UserHandler{Service: &userService}
+
 	itemRepo := repository.ItemRepository{DB: pool}
 	itemService := service.ItemService{Repo: &itemRepo}
 	itemHandler := handler.ItemHandler{Service: &itemService}
@@ -42,6 +46,8 @@ func main() {
 	mux.HandleFunc("POST /item", itemHandler.HandleCreateItems)
 	mux.HandleFunc("PUT /item", itemHandler.HandleUpdateItem)
 	mux.HandleFunc("DELETE /item", itemHandler.HandleDeleteItem)
+
+	mux.HandleFunc("POST /register", userHandler.PostUser)
 
 	err = http.ListenAndServe(":3333", mux)
 	if err != nil {
