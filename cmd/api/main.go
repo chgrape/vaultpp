@@ -7,6 +7,7 @@ import (
 
 	"github.com/chgrape/vaultpp/internal/db"
 	"github.com/chgrape/vaultpp/internal/handler"
+	"github.com/chgrape/vaultpp/internal/middleware"
 	"github.com/chgrape/vaultpp/internal/repository"
 	"github.com/chgrape/vaultpp/internal/service"
 	"github.com/joho/godotenv"
@@ -41,13 +42,14 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /items", itemHandler.HandleGetItems)
+	mux.HandleFunc("GET /items", middleware.AuthMiddleware(itemHandler.HandleGetItems))
 	mux.HandleFunc("GET /item", itemHandler.HandleGetItem)
 	mux.HandleFunc("POST /item", itemHandler.HandleCreateItems)
 	mux.HandleFunc("PUT /item", itemHandler.HandleUpdateItem)
 	mux.HandleFunc("DELETE /item", itemHandler.HandleDeleteItem)
 
-	mux.HandleFunc("POST /register", userHandler.PostUser)
+	mux.HandleFunc("POST /register", userHandler.Register)
+	mux.HandleFunc("POST /login", userHandler.Login)
 
 	err = http.ListenAndServe(":3333", mux)
 	if err != nil {

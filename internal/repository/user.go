@@ -30,3 +30,14 @@ func (r *UserRepository) CreateUser(user User, ctx context.Context) (int, error)
 
 	return id, nil
 }
+
+func (r *UserRepository) GetUserPassHash(name string, ctx context.Context) (*User, error) {
+	var user User
+
+	err := r.DB.QueryRow(ctx, "SELECT id, password, role FROM users WHERE users.name=$1", name).Scan(&user.ID, &user.PassHash, &user.Role)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}

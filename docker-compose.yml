@@ -1,4 +1,14 @@
 services:
+  app:
+    build: .
+    ports:
+      - "3333:3333"
+    depends_on:
+      - postgres
+    container_name: app
+    env_file:
+      - .env
+
   postgres:
     image: "postgres:bookworm"
     ports:
