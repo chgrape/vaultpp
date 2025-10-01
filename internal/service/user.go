@@ -2,13 +2,16 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/chgrape/vaultpp/internal/repository"
 	"github.com/chgrape/vaultpp/internal/validation"
+	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -37,6 +40,20 @@ type Claims struct {
 func (s *UserService) Register(user UserValidator, ctx context.Context) (int, error) {
 	err := validation.Instance().Struct(user)
 	if err != nil {
+		if errs, ok := err.(validator.ValidationErrors); ok {
+			var errors []string
+			for _, e := range errs {
+				switch e.Tag() {
+				case "required":
+					errors = append(errors, fmt.Sprintf("%s is required", e.Field()))
+				case "oneof":
+					errors = append(errors, fmt.Sprintf("%s must be one of the following values: [%s] ", e.Field(), e.Param()))
+				default:
+					errors = append(errors, fmt.Sprintf("%s is invalid", e.Field()))
+				}
+			}
+			return 0, fmt.Errorf("%s", strings.Join(errors, "; "))
+		}
 		return 0, err
 	}
 
