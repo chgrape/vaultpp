@@ -22,6 +22,26 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
+  vault:
+    privileged: true
+    image: "hashicorp/vault"
+    container_name: vault
+    ports:
+      - "8200:8200"
+    cap_add:
+      - IPC_LOCK
+    environment:
+      VAULT_ADDR: http://0.0.0.0:8200
+    volumes:
+      - vault_data:/vault/file
+      - vault_logs:/vault/logs
+      - ./vault-config.hcl:/vault/config/vault-config.hcl
+    command: vault server -config=/vault/config
+
+
 volumes:
   pgdata:
+  vault_data:
+  vault_logs:
+  vault_config:
     

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -73,7 +72,7 @@ func (s *UserService) Register(user UserValidator, ctx context.Context) (int, er
 	return id, err
 }
 
-func (s *UserService) Login(user LoginForm, ctx context.Context) (string, error) {
+func (s *UserService) Login(user LoginForm, ctx context.Context, jwtKey string) (string, error) {
 	err := validation.Instance().Struct(user)
 	if err != nil {
 		return "", err
@@ -95,7 +94,7 @@ func (s *UserService) Login(user LoginForm, ctx context.Context) (string, error)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	tokenString, err := token.SignedString([]byte(jwtKey))
 	if err != nil {
 		return "", err
 	}
